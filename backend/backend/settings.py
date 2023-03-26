@@ -141,8 +141,8 @@ SITE_ID = 1
 
 # Email backend settings for Django
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'roiacultnet1@gmail.com'
-EMAIL_HOST_PASSWORD = 'woycbqxtomvkzrih'
+EMAIL_HOST_USER = 'crazyyyfrogggg@gmail.com'
+EMAIL_HOST_PASSWORD = 'jaxocijvpjnhsrav'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'no-reply@project.com'
