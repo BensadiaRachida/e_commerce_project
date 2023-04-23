@@ -3,3 +3,5 @@ djangorestframework
 dj-rest-auth
 django-allauth
 pillow
+django-cors-headers
+email_validator

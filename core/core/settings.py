@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
@@ -49,6 +50,12 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "api"
 ]
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    "http://localhost:3000",
+    "http://localhost:8000",
+)
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -58,6 +65,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -107,6 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        
     },
 ]
 
@@ -148,8 +157,18 @@ REST_AUTH = {
     # 'PASSWORD_RESET_CONFIRM_SERIALIZER': 'backendapp.serializers.PasswordResetConfirmSerializer',
     # "TOKEN_SERIALIZER": "backendapp.serializers.OutrunTokenSerializer",
     "REGISTER_SERIALIZER": "api.serializers.CustomRegisterSerializer",
-}       
+}
 
+# for testing: the email will show up in the console
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# for production: it's will send a real email
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+REST_SESSION_LOGIN = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_USERNAME_REQUIRED = False
 
 # Email backend settings for Django
 EMAIL_HOST = 'smtp.gmail.com'
@@ -162,3 +181,8 @@ DEFAULT_FROM_EMAIL = 'no-reply@project.com'
 AUTH_USER_MODEL = 'api.User'
 
 MEDIA_URL = 'http://localhost:8000'+'/media/'
+
+AUTHENTICATION_BACKENDS = (
+    "allauth.account.auth_backends.AuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)

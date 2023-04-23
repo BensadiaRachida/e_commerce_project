@@ -22,5 +22,10 @@ urlpatterns = [
     path('api/',include('rest_framework.urls')),
     path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('api/change-password/', ChangePasswordView.as_view(), name='change-password'),
+    path(
+        "api/auth/verify_email/",
+        VerifyEmailCode.as_view(),
+        name="VerifyEmailCode",
+    ),
+    # path('api/change-password/', ChangePasswordView.as_view(), name='change-password'),
 ]
