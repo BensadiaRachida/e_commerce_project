@@ -17,7 +17,8 @@ try:
 except ImportError:
     raise ImportError('allauth needs to be added to INSTALLED_APPS.')
 
-        
+
+
 # Custom registration serializer
 # django-rest-auth’s default register serializer (RegisterSerializer) only recognizes fields for django built-in user model
 # the fields in the custom serializer are gonna appear in registration form in addition to the base user model fields (username , email ,psswd1,psswd2)
@@ -25,17 +26,15 @@ class CustomRegisterSerializer(RegisterSerializer):
     username=None
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=True, write_only=True)
-    password1 = serializers.CharField( write_only=True, required=True,
-    style={'input_type': 'password', })
-    password2 = serializers.CharField( write_only=True, required=True,
-    style={'input_type': 'password' })
     phone = serializers.CharField(max_length=10,required=True,validators=[phone_regex])
-    date_of_birth = serializers.DateField(required=True, write_only=True)
+    adress =serializers.CharField(max_length=300,required=True,write_only=True)
     sex = serializers.CharField(required=True, write_only=True)
-
+    date_of_birth = serializers.DateField(required=True, write_only=True)
+    password1 = serializers.CharField( write_only=True, required=True, style={'input_type': 'password', })
+    password2 = serializers.CharField( write_only=True, required=True, style={'input_type': 'password' })
     
     """
-    the following methods are instance methods of RegisterSerializer class , which we will override
+    the following methods are instance methods of the predefined RegisterSerializer class , which we will override
     
     """   
     def validate_email(self, email):
@@ -73,7 +72,8 @@ class CustomRegisterSerializer(RegisterSerializer):
             'last_name': self.validated_data.get('last_name', ''),
             'email': self.validated_data.get('email', ''),
             'phone': self.validated_data.get('phone', ''),
-            'image':self.validated_data.get('image',''),
+            'address':self.validated_data.get('address', ''),
+            'profil_image':self.validated_data.get('profil_image',''),
             'password1': self.validated_data.get('password1', ''),
             'password2': self.validated_data.get('password2', ''),
             'date_of_birth': self.validated_data.get('date_of_birth', ''),
@@ -82,6 +82,11 @@ class CustomRegisterSerializer(RegisterSerializer):
     # save a user instance
     def save(self, request):
         user = super().save(request)
+        self.cleaned_data = self.get_cleaned_data()
+        user.phone = self.cleaned_data.phone
+        user.sex = self.cleaned_data.sex
+        user.date_of_birth = self.cleaned_data.date_of_birth
+        user.save()
         # prepare code email confirmation
         emailCodeConfirmation = EmailConfirmationCode()
         emailCodeConfirmation.user = user
@@ -123,23 +128,41 @@ class UserListSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
             "is_superuser",
-            "first_name",
-            "last_name",
-            "phone_number",
-            "age",
+            "email",
             "date_joined",
         ]
-        fields = ['__all__']
+        exclude = ("password","groups", "user_permissions")
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ("password","groups", "user_permissions")
 
-# class VerifyEmailSerializer(serializers.Serializer):
-#    key = serializers.CharField()    
-       
-# class ChangePasswordSerializer(serializers.Serializer):
-#     model = get_user_model()
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
 
-#     """
-#     Serializer for password change endpoint.
-#     """
-#     old_password = serializers.CharField(required=True)
-#     new_password = serializers.CharField(required=True)   
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = review
+        fields = '__all__'
+
+class OrderSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+class CheckoutSerializer(serializers.ModelSerializer):
+    orders = OrderSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Checkout
+        fields = '__all__'
+
+class OrderCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'

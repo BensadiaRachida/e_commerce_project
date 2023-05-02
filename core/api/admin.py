@@ -5,7 +5,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 
-from .models import User
+from .models import *
+
 class UserAdmin(BaseUserAdmin):
    form = UserChangeForm
    fieldsets = (
@@ -26,3 +27,6 @@ class UserAdmin(BaseUserAdmin):
    search_fields = ('email', 'first_name', 'last_name')
    ordering = ('email', )
 admin.site.register(User, UserAdmin)
+admin.site.register(Product)
+admin.site.register(Order)
+admin.site.register(Checkout)

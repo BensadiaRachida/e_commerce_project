@@ -5,3 +5,4 @@ django-allauth
 pillow
 django-cors-headers
 email_validator
+drf_writable_nested

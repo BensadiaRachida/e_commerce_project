@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -132,10 +132,13 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-STATIC_URL = "static/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
+
+# MEDIA_URL = 'http://127.0.0.1:8000'+'/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -152,7 +155,7 @@ REST_FRAMEWORK={
 
 }
 REST_AUTH = {
-    # 'USER_DETAILS_SERIALIZER': 'backendapp.serializers.UserSerializer',
+    'USER_DETAILS_SERIALIZER': 'api.serializers.UserListSerializer',
     # 'PASSWORD_RESET_SERIALIZER': 'backendapp.serializers.PasswordResetSerializer',
     # 'PASSWORD_RESET_CONFIRM_SERIALIZER': 'backendapp.serializers.PasswordResetConfirmSerializer',
     # "TOKEN_SERIALIZER": "backendapp.serializers.OutrunTokenSerializer",
@@ -179,8 +182,6 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'no-reply@project.com'
 
 AUTH_USER_MODEL = 'api.User'
-
-MEDIA_URL = 'http://localhost:8000'+'/media/'
 
 AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
